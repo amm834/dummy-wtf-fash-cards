@@ -1,20 +1,30 @@
-import express, {Request, Response} from 'express';
+import express from 'express';
+import * as mongoose from "mongoose";
+import "dotenv/config"
+import {router as decksRouter} from "./routes/decks.routes.js";
+import bodyParser from "body-parser";
+import cors from 'cors';
 
-export interface User {
-    name: string
-}
-
+const port = process?.env?.PORT ?? 8000;
 
 const app = express();
-const port = process?.env?.PORT ?? 8000
+app.use(bodyParser.json());
+app.use(cors())
 
-app.get('/', async (req: Request, res: Response) => {
-    const user: User = {
-        name: "Mg Mg"
+
+const main = async () => {
+    try {
+        mongoose.set('strictQuery', true)
+        await mongoose.connect("mongodb://localhost:27017/flashcards");
+    } catch (e) {
+        console.error(`⚡️[server]: Error connecting to database: ${e}`)
     }
-    return res.json(user);
-});
 
+
+    app.use("/", decksRouter);
+}
+
+await main();
 
 app.listen(port, () => {
     console.log(`⚡️[server]: Server is running at http://localhost:${port}`);
