@@ -16,3 +16,12 @@ export const store = async (req: Request, res: Response) => {
 
     res.status(201).json({deck})
 }
+
+export const destory = async (req: Request, res: Response) => {
+    const {id} = req.params
+    if (!id)
+        return res.status(400).json({message: "Id is required"})
+
+    const deck = await Deck.findByIdAndDelete(id)
+    res.status(301).json({deck})
+}
