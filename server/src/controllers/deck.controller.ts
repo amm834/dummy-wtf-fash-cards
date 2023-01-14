@@ -1,6 +1,11 @@
 import type {Request, Response} from "express";
 import Deck from "../models/deck.model.js";
 
+export const index = async (req: Request, res: Response) => {
+    const decks = await Deck.find();
+    res.json({decks});
+}
+
 export const store = async (req: Request, res: Response) => {
     const {name} = req.body
     if (!name) {

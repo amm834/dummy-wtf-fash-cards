@@ -1,7 +1,9 @@
 import {Router} from "express";
-import {store} from "../controllers/deck.controller.js";
+import {index, store} from "../controllers/deck.controller.js";
 
 export const router: Router = Router();
 
 
-router.post('/decks', store)
+router
+    .get("/decks", index)
+    .post('/decks', store)
