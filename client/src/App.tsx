@@ -12,21 +12,33 @@ function App() {
     useEffect(() => {
         fetch(`${import.meta.env.VITE_API_URL}/decks`)
             .then(res => res.json())
-            .then(res => setDecks(res?.decks))
+            .then(res => {
+                setDecks(res?.decks)
+            })
     }, [name])
 
 
     const onSubmit = async (e: FormEvent) => {
         e.preventDefault()
 
-        await fetch(`${import.meta.env.VITE_API_URL}/decks`, {
+        const res = await fetch(`${import.meta.env.VITE_API_URL}/decks`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({name})
         })
+        const deck = await res.json()
+        setDecks([...decks, deck?.deck])
     };
+
+    const deleteDeck = async (id: number) => {
+        await fetch(`${import.meta.env.VITE_API_URL}/decks/${id}`, {
+            method: 'DELETE'
+        })
+        setDecks(decks.filter(deck => deck._id !== id))
+    }
+
     return (
         <main className="mx-auto container py-10">
 
@@ -38,6 +50,12 @@ function App() {
                     <div className="card-body items-center text-center">
                         <h2 className="card-title">{deck?.name}</h2>
                         <p>Description</p>
+                        <div className="card-actions justify-end">
+                            <button className="btn btn-warning "
+                                    onClick={() => deleteDeck(deck._id)}>
+                                Delete
+                            </button>
+                        </div>
                     </div>
                 </div>)}
             </div>
