@@ -1,34 +1,37 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import './App.css'
+import {FormEvent, useState} from 'react'
 
 function App() {
-  const [count, setCount] = useState(0)
+    const [name, setName] = useState('')
 
-  return (
-    <div className="App">
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src="/vite.svg" className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://reactjs.org" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </div>
-  )
+
+    const onSubmit = async (e: FormEvent) => {
+        e.preventDefault()
+        console.log('hello')
+
+        await fetch(`${import.meta.env.VITE_API_URL}/decks`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({name})
+        })
+    };
+    return (
+        <form className="grid place-items-center min-h-screen" onSubmit={onSubmit}>
+            <div className="form-control w-full max-w-xs">
+                <label className="label">
+                    <span className="label-text hidden">Deck Name</span>
+                </label>
+                <input
+                    type="text"
+                    placeholder="Type deck name here"
+                    onChange={(e) => setName(e.target.value)}
+                    className="input w-full max-w-xs"
+                    style={{outline: 'none'}}
+                />
+            </div>
+        </form>
+    )
 }
 
 export default App
